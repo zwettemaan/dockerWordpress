@@ -30,6 +30,7 @@ It offers:
 - Handle Let's Encrypt certificate renewals, in coordination with CloudFlare
 - Easily mirror your production site from a cloud provider to a local copy running in VirtualBox for easier debugging, development or post-mortems.
 - Use local command-line scripts to trigger actions on the production site in the cloud.
+- Easy to experiment and 'start over': simply destroy any failed experiment, and start over with a clean slate.
 
 # How to use
 
@@ -45,7 +46,7 @@ VIRTUALBOX_LOCAL_IP_ADDRESS = "MY_localIPAddress"
 
 which indicates you need to replace that string with something else - in this case, the IP address you want to use for your local VM in VirtualBox.
 
-## Check out this repo
+## Clone this repo `dockerWordpress`
 
 Put it somewhere convenient on your computer.
 
@@ -69,7 +70,13 @@ Registering your domain and handling DNS for your domain are two separate things
 
 https://www.cloudflare.com/dns/
 
-For the sake of argument, I'll be using the domain 'MY_domain.tmp.domains' as a placeholder for examples.
+For the sake of argument, I'll be using the following settings for a demo-site:
+```
+domain: demo.tmp.domains
+IP address: 192.168.5.123
+```
+
+## Set up CloudFlare
 
 First log in to CloudFlare and use the function 'Add a Site' to add your domain. 
 
@@ -100,27 +107,33 @@ The scripts are set up to use Ubuntu as the host operating system for Docker.
 
 We're using Ubuntu 20.04 LTS which should be supported until 2024
 
-## Pick a target
+## Choose between VirtualBox or DigitalOcean
 
-The root directory of this repo contains at least two Vagrantfiles: `Vagrantfile.DigitalOcean` and `Vagrantfile.VirtualBox`
+The templates directory of this repo contains at least two Vagrantfiles: `templates/Vagrantfile.DigitalOcean` and `templates/Vagrantfile.VirtualBox`
 
-Neither of these file is 'active' - the Vagrant software expects a file called just `Vagrantfile` (without file name extension).
+Neither of these file is 'active'. 
 
-`Vagrantfile` (without file name extension) is part of the `.gitignore` list, so you can edit the copied `Vagrantfile` to your heart's content - any changes you make are not reported back to the repository.
+The Vagrant software expects a file called just `Vagrantfile` (without file name extension) in the root directory of the repository.
+
+The idea is that you make a copy of either `templates/Vagrantfile.DigitalOcean` or `templates/Vagrantfile.VirtualBox` into the root directory, and rename it to `Vagrantfile`.
+
+Note: such `Vagrantfile` (without file name extension) is listed as an entry in the `.gitignore` list. 
+
+The copied `Vagrantfile` is not tracked by the git repository, and you can edit `Vagrantfile` to your heart's content, without fear that any changes you would disrupt the content of the parent git repository.
 
 If things go to custard, you can always start over by making a fresh copy of `Vagrantfile.DigitalOcean` or `Vagrantfile.VirtualBox`.
 
 Both `Vagrantfile.xxx` will pass an environment variable `SERVERTYPE` to the `bootstrap.sh` script which is run by Vagrant when launching the virtual computer.
 
-This mechanism allows the `bootstrap.sh` script to alter its behavior depending on whether we're building a local VM in VirtualBox, or a remote VM with DigitalOcean.
+This mechanism allows the `bootstrap.sh` script to alter its behavior depending on whether we're building a local virtual machine (aka VM) in VirtualBox, or a remote VM with DigitalOcean.
 
 ## VirtualBox
 
-To spin up your WordPress site on a local VirtualBox, duplicate the `Vagrantfile.VirtualBox` to `Vagrantfile`.
+To spin up your WordPress site on a local VirtualBox, duplicate the `templates/Vagrantfile.VirtualBox` to `Vagrantfile`.
 
-Make a copy of the files `templates\config.rb` and `templates\config.sh` and put them in the root of the repository.
+Make a copy of the files `templates/config.rb` and `templates/config.sh` and put them in the root of the repository.
 
-Edit the copies of `config.rb` and `config.sh` to match your needs.
+Edit these copies of `config.rb` and `config.sh` to match your needs.
 
 For a VirtualBox setup you can ignore any settings that start with `DIGOCE_...`.
 
@@ -136,13 +149,35 @@ Then use an address on that network. In that case, the server will only be visib
 
 See 'File - Host Network Manager...' in VirtualBox. 
 
-For the sake of argument, I've set up 192.168.5.xxx as a host-only network, and I picked IP address 192.168.5.123 as the IP address I'll use for the VirtualBox server. In my case, any address between 192.168.5.2 and 192.168.5.254 will do. 
+### Example
 
-192.168.5.1 is the address used on the host-only network for my own physical computer - so we'll have at least two IP addresses on this network: 192.168.5.1 is my physical computer and 192.168.5.123 is the virtual machine.
+For the sake of argument, I've set up 192.168.5.xxx as a host-only network in VirtualBox.
+
+In that case, any address between 192.168.5.2 and 192.168.5.254 will do. 
+
+I randomly picked IP address 192.168.5.123 as the IP address I'll use for the VirtualBox server. 
+
+192.168.5.1 is the address that will be used to represent my own physical computer on the host-only network.
+
+We'll have at least two IP addresses on this network: 192.168.5.1 is my physical computer and 192.168.5.123 is the virtual machine.
 
 Note: using CloudFlare is not a hard requirement for setting up a local VirtualBox server; it only becomes a requirement for using the scripts with DigitalOcean.
 
 If you don't use CloudFlare, the process will be slightly different than what is documented below.
+
+Using CloudFlare as my DNS provider, I set up demo.tmp.domains to map to address 192.168.5.123. 
+
+Important: no proxying; the DNS entry needs to be set to 'DNS only'. 
+
+As a result, each time I use the domain name 'demo.tmp.domains' it will be translated to 192.168.5.123.
+
+Note: despite this mapping, address 192.168.5.123 is still not accessible 'from the outside'; it can only be reached from your own computer (for a host-only network) or from your own office network (if your office network were to be using 192.168.5.xxx for its internal addresses).
+
+I.e. if someone tried to access 192.168.5.123 or demo.tmp.domains from anywhere on the internet, they would NOT be able to reach your virtual machine. The network packets cannot ever make it through.
+
+Addresses that start with 192.168.xxx.xxx are 'unroutable' and cannot be accessed from anywhere else but the local network. See https://en.wikipedia.org/wiki/Reserved_IP_addresses
+
+### Starting the machine
 
 If you've gone through these motions previously, you might want to run
 ```
