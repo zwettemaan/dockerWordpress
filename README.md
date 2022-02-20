@@ -55,6 +55,12 @@ At the time of this writing, the version is Vagrant 2.2.19
 
 During setup we use a single folder `/vagrant` which is shared between your local copy of the repository and the Ubuntu host on the virtual machine.
 
+## DNS provider
+
+You need to use CloudFlare to handle your DNS entries; if you are currently running your DNS servers with another provider, you need to convert these over to use the CloudFlare DNS servers.
+
+https://www.cloudflare.com/plans/#add-ons
+
 ## VirtualBox
 
 Install VirtualBox on your computer
@@ -98,13 +104,15 @@ Edit the copies of `config.rb` and `config.sh` to match your needs.
 
 If you have a free local IP address on your network that you can use for a local web server, you can set `VIRTUALBOX_LOCAL_IP_ADDRESS` to that IP address. The server can be visible and accessible to other computers on your local network.
 
-If you don't have that information, you can instead create a host-only network (a network that only exists in your computer) in VirtualBox and then use an address on that network. In that case, the server will only be visible and accessible from your own computer. 
+If you don't have that information, you can instead create a host-only network (a network that only exists in your computer) in VirtualBox and then use an address on that network. In that case, the server will only be visible and accessible from your own computer.
+
+
 
 See 'File - Host Network Manager...' in VirtualBox. 
 
 For VirtualBox you can ignore any settings that start with `DIGOCE_...`.
 
-If you've run this setup previously, you might want to run
+If you've gone through these motions previously, you might want to run
 ```
 vagrant box update
 ```
