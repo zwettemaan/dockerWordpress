@@ -92,7 +92,40 @@ This mechanism allows the `bootstrap.sh` script to alter its behavior depending 
 
 To spin up your WordPress site on a local VirtualBox, duplicate the `Vagrantfile.VirtualBox` to `Vagrantfile`.
 
-Edit the `config.rb` and `config.sh` to match your needs
+Make a copy of the files `templates\config.rb` and `templates\config.sh` and put them in the root of the repository.
+
+Edit the copies of `config.rb` and `config.sh` to match your needs.
+
+If you have a free local IP address on your network that you can use for a local web server, you can set `VIRTUALBOX_LOCAL_IP_ADDRESS` to that IP address. The server can be visible and accessible to other computers on your local network.
+
+If you don't have that information, you can instead create a host-only network (a network that only exists in your computer) in VirtualBox and then use an address on that network. In that case, the server will only be visible and accessible from your own computer. 
+
+See 'File - Host Network Manager...' in VirtualBox. 
 
 For VirtualBox you can ignore any settings that start with `DIGOCE_...`.
 
+If you've run this setup previously, you might want to run
+```
+vagrant box update
+```
+to make sure you have the latest Vagrant box.
+
+If you want to start over from scratch, first run
+```
+vagrant destroy
+```
+which will destroy any previously created virtual machine, so you can have a clean slate.
+
+Start the virtual machine:
+```
+vagrant up
+```
+If the virtual machine does not exist yet, it will be built. Otherwise, the existing virtual machine will be started.
+
+## DigitalOcean
+
+To spin up your WordPress site on a droplet at DigitalOcean duplicate the `Vagrantfile.DigitalOcean` to `Vagrantfile`.
+
+Edit the `config.rb` and `config.sh` to match your needs
+
+For VirtualBox you can ignore any settings that start with `VIRTUALBOX_...`.
