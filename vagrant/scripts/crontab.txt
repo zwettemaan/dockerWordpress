@@ -1,0 +1,1 @@
+0 0 * * * SHELL=/bin/sh PATH=/bin:/sbin:/usr/bin:/usr/sbin /vagrant/scripts/backup.sh

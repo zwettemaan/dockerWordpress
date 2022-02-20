@@ -1,0 +1,30 @@
+# This Vagrantfile passes SERVERTYPE=dockerlocal to bootstrap.sh
+#
+# Make sure to install the plugin
+#
+# vagrant plugin install vagrant-vbguest
+#
+
+SERVERTYPE = "dockerlocal"
+
+config_file = './config.rb'
+require config_file if File.file? config_file
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = VIRTUALBOX_UBUNTU_VERSION
+
+  config.ssh.keep_alive = true
+  config.vm.boot_timeout = 1200
+
+  config.vm.network "public_network", ip: VIRTUALBOX_LOCAL_IP_ADDRESS
+  config.vm.synced_folder SHARED_FOLDER_NAME + "/", "/" + SHARED_FOLDER_NAME, id: SHARED_FOLDER_ID
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 2048
+    v.cpus = 2
+  end
+
+  config.vm.provision :shell, path: "config.sh"
+  config.vm.provision :shell, path: "bootstrap.sh", env: { "SERVERTYPE" => SERVERTYPE }
+
+end
