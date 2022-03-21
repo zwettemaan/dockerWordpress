@@ -2,8 +2,8 @@
 
 . config.sh
 
-if [ "${SERVERTYPE}" == "VIRTUALBOX_docker" ]; then
-  export SERVER_SHORT_NAME=VIRTUALBOX_docker
+if [ "${SERVERTYPE}" == "dockerlocal" ]; then
+  export SERVER_SHORT_NAME=dockerlocal
   export LOCALVM=1
 else
   export SERVER_SHORT_NAME=docker
@@ -20,7 +20,7 @@ apt-get -y update
 
 if [ "$DEV_ADD_TOOLS" == "1" ]; then
   apt-get -y install linux-headers-$(uname -r) build-essential dkms
-  if [ "${SERVERTYPE}" == "VIRTUALBOX_docker" ]; then
+  if [ "${SERVERTYPE}" == "dockerlocal" ]; then
     cd /opt/VBoxGuestAdditions-*/init  
     ./vboxadd setup
   fi
@@ -97,6 +97,95 @@ fi
 
 cd /etc/nginx/sites-enabled
 rm -f default
+
+cat > /etc/fail2ban/filter.d/docuwiki-fish.conf << EOF
+# Fail2Ban configuration file
+#
+#
+# \$Revision: 1 \$
+#
+ 
+[Definition]
+# Option: failregex
+# Notes.: Regexp to catch known spambots and software alike. Please verify
+# that it is your intent to block IPs which were driven by
+# abovementioned bots.
+# Values: TEXT
+#
+failregex = ^<HOST> -.*GET.*\/dokuwiki\/doku\.php\?.*do=login.*\$
+
+# Option: ignoreregex
+# Notes.: regex to ignore. If this regex matches, the line is ignored.
+# Values: TEXT
+#
+ignoreregex =
+EOF
+
+cat > /etc/fail2ban/filter.d/docuwiki-noregister.conf << EOF
+# Fail2Ban configuration file
+#
+#
+# \$Revision: 1 \$
+#
+ 
+[Definition]
+# Option: failregex
+# Notes.: Regexp to catch known spambots and software alike. Please verify
+# that it is your intent to block IPs which were driven by
+# abovementioned bots.
+# Values: TEXT
+#
+failregex = ^<HOST> -.*GET.*\/dokuwiki\/doku\.php\?.*do=register.*\$
+
+# Option: ignoreregex
+# Notes.: regex to ignore. If this regex matches, the line is ignored.
+# Values: TEXT
+#
+ignoreregex =
+EOF
+
+cat > /etc/fail2ban/filter.d/pythonattack.conf << EOF
+# Fail2Ban configuration file
+#
+#
+# \$Revision: 1 \$
+#
+ 
+[Definition]
+# Option: failregex
+# Notes.: Regexp to catch known spambots and software alike. Please verify
+# that it is your intent to block IPs which were driven by
+# abovementioned bots.
+# Values: TEXT
+#
+
+failregex = ^<HOST> -.* \/jmx-console.*\$
+            ^<HOST> -.* \/cgi-bin.*\$
+            ^<HOST> -.* \/vicidial.*\$
+            ^<HOST> -.* \/manager.*\$
+            ^<HOST> -.* \/\/administrator.*\$
+            ^<HOST> -.* \/administrator.*\$
+            ^<HOST> -.*\/[Dd]rupal.*\$
+            ^<HOST> -.*\/joomla.*\$
+            ^<HOST> -.*\/Joomla.*\$
+            ^<HOST> -.*\/cms.*\$
+            ^<HOST> -.*\/phpmyadmin.*\$
+            ^<HOST> -.*\/phpMyAdmin.*\$
+            ^<HOST> -.*\/mysql.*\$
+            ^<HOST> -.*\/sql.*\$
+            ^<HOST> -.*\/myadmin.*\$
+            ^<HOST> -.*\/sqlite.*\$
+            ^<HOST> -.*\/SQLite.*\$
+            ^<HOST> -.*\/webdav.*\$
+            ^<HOST> -.*\/webdav.*\$
+            ^<HOST> -.*\/web-console.*\$
+
+# Option: ignoreregex
+# Notes.: regex to ignore. If this regex matches, the line is ignored.
+# Values: TEXT
+#
+ignoreregex =
+EOF
 
 cat > /etc/fail2ban/filter.d/wordpress-badlogin.conf << EOF
 # Fail2Ban configuration file
@@ -469,7 +558,7 @@ service fail2ban start
 
 crontab < /vagrant/scripts/crontab.txt
 
-if [ "${SERVERTYPE}" == "DIGOCE_docker" ]; then
+if [ "${SERVERTYPE}" == "dockerDO" ]; then
   rm -f /vagrant/scripts/*cpt
   rm -f /vagrant/scripts/decryptSensitive.sh
   rm -f /vagrant/scripts/encryptSensitive.sh

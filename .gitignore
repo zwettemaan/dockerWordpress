@@ -1,3 +1,4 @@
 Vagrantfile
 config.rb
 config.sh
+/vagrant/serverport/letsencrypt/

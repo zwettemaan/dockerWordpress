@@ -18,33 +18,12 @@ if [ ! -d "${DIR_CONFIG}" ]; then
 	mkdir "${DIR_CONFIG}"
 fi
 
-rm -f /tmp/certbot_iwantmyname_before.log
-touch /tmp/certbot_iwantmyname_before.log
-
-. certlist_iwantmyname.sh
-
-for CERTBOT_DOMAIN in ${IWANTMYNAME_CERTLIST[@]}; do
-  ./certbot_iwantmyname_delete.sh "${CERTBOT_DOMAIN}"
-done
-
 . ${SCRIPTDIR}/credentials.ini
 
 cat > /tmp/credentials.ini << EOF
 dns_cloudflare_email = ${CF_USER}
 dns_cloudflare_api_key = ${CF_PASS}
 EOF
-
-certbot -n \
-  --expand \
-  --agree-tos \
-  --email kris@rorohiko.com \
-  --work-dir "${DIR_WORK}" \
-  --logs-dir "${DIR_LOG}" \
-  --config-dir "${DIR_CONFIG}" \
-  --manual \
-  --preferred-challenges dns \
-  --manual-auth-hook "${SCRIPTDIR}/certbot_iwantmyname_before.sh" \
-  ${CERTLIST} certonly
 
 . certlist_cloudflare.sh
 
