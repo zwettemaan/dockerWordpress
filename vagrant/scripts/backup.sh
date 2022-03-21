@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 export SCRIPTDIR=`dirname "$0"`
 cd "${SCRIPTDIR}"
 export SCRIPTDIR=`pwd`
