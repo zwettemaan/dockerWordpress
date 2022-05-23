@@ -5,4 +5,4 @@
 /bootstrap.sh
 /Vagrantfile
 /ssh
-/vagrant/serverport/letsencrypt/
+/vagrant

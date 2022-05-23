@@ -13,4 +13,6 @@ if [ "${confirm}" == "Y" ]; then
 	rm "${REPO_ROOT}config.sh"
 	rm "${REPO_ROOT}bootstrap.sh"
 	rm "${REPO_ROOT}Vagrantfile"
+	rm -rf "${REPO_ROOT}ssh"
+	rm -rf "${REPO_ROOT}vagrant"
 fi

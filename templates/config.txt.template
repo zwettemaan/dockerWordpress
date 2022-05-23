@@ -32,7 +32,8 @@ OWNCLOUD_BACKUP_SERVER="MY_BACKUP_SERVER"
 
 # 
 # A comma-separated list of all the other domain names that will be served from this instance. 
-# This list should NOT include the MAIN_DOMAIN
+# This list should NOT include the MAIN_DOMAIN, and should not include any 'www.' domain variants.
+# These scripts assume that if you have domain xyz.com, you also want domain www.xyz.com
 #
 
 ADDITIONAL_DOMAINLIST="MY_DOMAIN1,MY_DOMAIN2"
