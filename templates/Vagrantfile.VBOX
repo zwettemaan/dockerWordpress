@@ -1,11 +1,11 @@
-# This Vagrantfile passes SERVERTYPE=dockerlocal to bootstrap.sh
+# This Vagrantfile passes SERVERTYPE=VBOX_docker to bootstrap.sh
 #
 # Make sure to install the plugin
 #
 # vagrant plugin install vagrant-vbguest
 #
 
-SERVERTYPE = "dockerlocal"
+SERVERTYPE = "VBOX_docker"
 
 config_file = './config.rb'
 require config_file if File.file? config_file

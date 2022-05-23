@@ -31,11 +31,7 @@ export DOMAIN_NS=`${SCRIPTDIR}/getdomainNS.sh ${BASE_DOMAIN}`
 
 export BASE_DOMAIN_NS=`echo ${DOMAIN_NS} | sed -E -e "s/^(.*\.)?ns[1-9]?\.(.*)\$/\\2/g"`
 
-if [ "${BASE_DOMAIN_NS}" == "iwantmyname.net." ]; then
-    export LETSENCRYPT_SHARED_DOMAIN=${LETSENCRYPT_IWANTMYNAME_SHARED_DOMAIN}
-else
-    export LETSENCRYPT_SHARED_DOMAIN=${LETSENCRYPT_CLOUDFLARE_SHARED_DOMAIN}
-fi
+export LETSENCRYPT_SHARED_DOMAIN=${LETSENCRYPT_CLOUDFLARE_SHARED_DOMAIN}
 
 cd /root
 if [ ! -d ${SERVER_DOMAIN} ]; then
