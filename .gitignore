@@ -1,8 +1,9 @@
 /.vagrant
-/config.txt
+/bootstrap.sh
 /config.rb
 /config.sh
-/bootstrap.sh
+/config.txt
 /Vagrantfile
 /ssh
 /vagrant
+/toBeDeleted

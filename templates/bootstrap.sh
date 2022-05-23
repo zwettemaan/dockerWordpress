@@ -1,12 +1,6 @@
-#!/usr/bin/env bash
-
-. config.sh
-
-if [ "${SERVERTYPE}" == "dockerlocal" ]; then
-  export SERVER_SHORT_NAME=dockerlocal
+if [ "${SERVERTYPE}" == "VBOX_docker" ]; then
   export LOCALVM=1
 else
-  export SERVER_SHORT_NAME=docker
   export LOCALVM=0
 fi
 
@@ -20,7 +14,7 @@ apt-get -y update
 
 if [ "$DEV_ADD_TOOLS" == "1" ]; then
   apt-get -y install linux-headers-$(uname -r) build-essential dkms
-  if [ "${SERVERTYPE}" == "dockerlocal" ]; then
+  if [ "${SERVERTYPE}" == "VBOX_docker" ]; then
     cd /opt/VBoxGuestAdditions-*/init  
     ./vboxadd setup
   fi
@@ -28,6 +22,10 @@ fi
 
 rm -rf /etc/localtime
 ln -s /usr/share/zoneinfo/NZ /etc/localtime
+
+add-apt-repository ppa:ondrej/php -y
+apt-get update
+apt-get upgrade
 
 apt-get -y install docker.io
 apt-get -y install docker-compose
@@ -50,26 +48,19 @@ export APACHEVERSION="${APACHEVERSION}"
 export APACHEIMAGE="${APACHEIMAGE}"
 export WORDPRESSVERSION="${WORDPRESSVERSION}"
 export WORDPRESSIMAGE="${WORDPRESSIMAGE}"
-export DOKUWIKIVERSION="${DOKUWIKIVERSION}"
-export DOKUWIKIIMAGE="${DOKUWIKIIMAGE}"
 export MYSQLIMAGE="${MYSQLIMAGE}"
 export SERVERTYPE="${SERVERTYPE}"
-export SERVER_SHORT_NAME="${SERVER_SHORT_NAME}"
 export LOCALVM="${LOCALVM}"
-export LETSENCRYPT_IWANTMYNAME_SHARED_DOMAIN="${LETSENCRYPT_IWANTMYNAME_SHARED_DOMAIN}"
 export LETSENCRYPT_CLOUDFLARE_SHARED_DOMAIN="${LETSENCRYPT_CLOUDFLARE_SHARED_DOMAIN}"
 export TRUSTED_IP="${TRUSTED_IP}"
 export IPV4_ADDR="${IPV4_ADDR}"
 export OWNCLOUD_BACKUP_SERVER="${OWNCLOUD_BACKUP_SERVER}"
+export CLOUDFLARE_USER="${CLOUDFLARE_USER}"
+export CLOUDFLARE_API_TOKEN="${CLOUDFLARE_API_TOKEN}"
 EOF
 
 pip install zope-interface
 pip install certbot-dns-cloudflare
-
-/vagrant/scripts/decryptSensitive.sh
-
-groupadd dokuwiki -g 1001
-useradd dokuwiki -u 1001 -g dokuwiki
 
 if [ ! -d /vagrant/serverport/letsencrypt ]; then
   if [ -f /vagrant/serverport/letsencrypt.tgz ]; then
@@ -97,52 +88,6 @@ fi
 
 cd /etc/nginx/sites-enabled
 rm -f default
-
-cat > /etc/fail2ban/filter.d/docuwiki-fish.conf << EOF
-# Fail2Ban configuration file
-#
-#
-# \$Revision: 1 \$
-#
- 
-[Definition]
-# Option: failregex
-# Notes.: Regexp to catch known spambots and software alike. Please verify
-# that it is your intent to block IPs which were driven by
-# abovementioned bots.
-# Values: TEXT
-#
-failregex = ^<HOST> -.*GET.*\/dokuwiki\/doku\.php\?.*do=login.*\$
-
-# Option: ignoreregex
-# Notes.: regex to ignore. If this regex matches, the line is ignored.
-# Values: TEXT
-#
-ignoreregex =
-EOF
-
-cat > /etc/fail2ban/filter.d/docuwiki-noregister.conf << EOF
-# Fail2Ban configuration file
-#
-#
-# \$Revision: 1 \$
-#
- 
-[Definition]
-# Option: failregex
-# Notes.: Regexp to catch known spambots and software alike. Please verify
-# that it is your intent to block IPs which were driven by
-# abovementioned bots.
-# Values: TEXT
-#
-failregex = ^<HOST> -.*GET.*\/dokuwiki\/doku\.php\?.*do=register.*\$
-
-# Option: ignoreregex
-# Notes.: regex to ignore. If this regex matches, the line is ignored.
-# Values: TEXT
-#
-ignoreregex =
-EOF
 
 cat > /etc/fail2ban/filter.d/pythonattack.conf << EOF
 # Fail2Ban configuration file
@@ -349,8 +294,6 @@ findtime = 86400
 bantime = 864000
 EOF
 
-. /vagrant/scripts/credentials.ini
-
 cat > /etc/fail2ban/action.d/cloudflare-blacklist.conf << EOF
 #
 # Author: Mike Rushton
@@ -406,8 +349,8 @@ actionunban = curl -X DELETE "https://api.cloudflare.com/client/v4/user/firewall
 
 [Init]
 
-cftoken = ${CF_PASS}
-cfuser = ${CF_USER}
+cftoken = ${CLOUDFLARE_API_TOKEN}
+cfuser = ${CLOUDFLARE_USER}
 
 EOF
 
@@ -430,8 +373,8 @@ cat > /root/clearCloudFlare.php << EOF
 // Read in all existing CloudFlare IP blocks then delete 
 // all which are older than some specified value
 
-\$authemail = "${CF_USER}";
-\$authkey   = "${CF_PASS}";
+\$authemail = "${CLOUDFLARE_USER}";
+\$authkey   = "${CLOUDFLARE_API_TOKEN}";
 \$page      = 1;
 \$ids       = array(); // id's to block
 \$cutoff    = time()-(3600*24*28); // 28 days
@@ -542,14 +485,6 @@ service fail2ban start
 
 crontab < /vagrant/scripts/crontab.txt
 
-if [ "${SERVERTYPE}" == "dockerDO" ]; then
-  rm -f /vagrant/scripts/*cpt
-  rm -f /vagrant/scripts/decryptSensitive.sh
-  rm -f /vagrant/scripts/encryptSensitive.sh
-  rm -f /vagrant/scripts/sensitiveFileList.sh
-  rm -f /vagrant/scripts/cryptkeyfile.txt
-  rm -f /vagrant/scripts/iwantmyname.sh
+if [ "${SERVERTYPE}" == "DIGOCE_docker" ]; then
   rm -f /vagrant/scripts/offlinecerts.sh
-  rm -f /vagrant/scripts/certbot_iwantmyname_before.sh
-  rm -f /vagrant/scripts/certbot_iwantmyname_delete.sh
 fi

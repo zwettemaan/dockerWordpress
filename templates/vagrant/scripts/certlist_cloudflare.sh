@@ -1,5 +1,5 @@
 declare -a CLOUDFLARE_CERTLIST=( \
-"MY_domain,*.MY_domain"  \
+"!!CERTLIST"
 )
 
 export CERTLIST=""

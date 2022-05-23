@@ -21,8 +21,8 @@ fi
 . ${SCRIPTDIR}/credentials.ini
 
 cat > /tmp/credentials.ini << EOF
-dns_cloudflare_email = ${CF_USER}
-dns_cloudflare_api_key = ${CF_PASS}
+dns_cloudflare_email = ${CLOUDFLARE_USER}
+dns_cloudflare_api_key = ${CLOUDFLARE_API_TOKEN}
 EOF
 
 . certlist_cloudflare.sh
@@ -30,7 +30,7 @@ EOF
 certbot -n \
   --expand \
   --agree-tos \
-  --email kris@rorohiko.com \
+  --email !!EMAIL \
   --work-dir "${DIR_WORK}" \
   --logs-dir "${DIR_LOG}" \
   --config-dir "${DIR_CONFIG}" \
