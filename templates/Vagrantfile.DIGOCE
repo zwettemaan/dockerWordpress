@@ -17,11 +17,7 @@ SERVERTYPE = "DIGOCE_docker"
 config_file = './config.rb'
 require config_file if File.file? config_file
 
-if Gem.win_platform? 
-  DIGOCE_PRIVATE_KEY_PATH = Dir.home + "/.ssh/" + DIGOCE_PRIVATE_KEY_FILE
-else
-  DIGOCE_PRIVATE_KEY_PATH = Dir.home + "/.ssh/" + DIGOCE_PRIVATE_KEY_FILE
-end
+DIGOCE_PRIVATE_KEY_PATH = "./ssh/" + PRIVATE_KEY_FILE
 
 Vagrant.configure("2") do |config|
 
@@ -32,7 +28,7 @@ Vagrant.configure("2") do |config|
       override.vm.box_url = DIGOCE_VM_BOX_URL
       override.nfs.functional = false
       override.vm.allowed_synced_folder_types = :rsync
-      provider.ssh_key_name = DIGOCE_PRIVATE_KEY_FILE
+      provider.ssh_key_name = PRIVATE_KEY_FILE
       provider.token = DIGOCE_PROVIDER_TOKEN
       provider.image = DIGOCE_UBUNTU_VERSION
       provider.region = DIGOCE_PROVIDER_REGION

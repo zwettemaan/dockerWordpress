@@ -45,6 +45,9 @@ OWNCLOUD_BACKUP_SERVER="MY_BACKUP_SERVER"
 # This list should NOT include the MAIN_DOMAIN, and should not include any 'www.' domain variants.
 # These scripts assume that if you have domain xyz.com, you also want domain www.xyz.com
 # Leave empty if no additional domains (i.e. set to "")
+# Do not put spaces between domain names - only commas
+# For these to work, you need to provide vagrant/serverport/MY_DOMAIN1 directories with a
+# 'frozen' server (either derived from a template, or from an existing server dump)
 #
 
 ADDITIONAL_DOMAINLIST="MY_DOMAIN1,MY_DOMAIN2"
@@ -71,11 +74,12 @@ MYSQL_ROOT_PASSWORD="MY_DATABASE_ROOT_PASSWORD"
 MYSQL_DATABASE="MY_DATABASE_NAME"
 
 #
-# For VirtualBox. Pick a random address in 192.168.xxx.xxx and make
-# sure no other instances use the same address
+# Only for VirtualBox. Pick an unused local LAN address (probably in the 192.168.xxx.xxx range) 
+# and make sure no other instances use the same address
+# You can also create a host-only network in VirtualBox and use an address on that network
 #
 
-VIRTUALBOX_LOCAL_IP_ADDRESS="192.168.MY_0TO255.MY_0TO255"
+VIRTUALBOX_LOCAL_IP_ADDRESS="MY_LOCAL_LAN_ADDRESS"
 
 #
 # For Digital Ocean. 
@@ -90,6 +94,13 @@ DIGOCE_PROVIDER_TOKEN="MY_DIGIOCE_PERSONAL_TOKEN"
 #
 # https://dash.cloudflare.com/profile/api-tokens
 #
+# CLOUDFLARE_API_TOKEN ought to be enough, but fail2ban only supports
+# CLOUDFLARE_USER + CLOUDFLARE_GLOBAL_API_KEY so for the time being you need
+# to provide these two, and CLOUDFLARE_API_TOKEN is ignored
+# https://github.com/fail2ban/fail2ban/pull/3269
+#
 
 CLOUDFLARE_USER="MY_CLOUDFLARE_USERID"
-CLOUDFLARE_API_TOKEN="MY_CLOUDFLARE_WORDPRESS_API_TOKEN"
+CLOUDFLARE_GLOBAL_API_KEY="MY_CLOUDFLARE_GLOBAL_API_KEY"
+# CLOUDFLARE_API_TOKEN: NOT SUPPORTED YET (fail2ban)
+CLOUDFLARE_API_TOKEN="MY_CLOUDFLARE_GLOBAL_API_KEY" 

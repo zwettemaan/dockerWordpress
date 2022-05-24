@@ -1,4 +1,5 @@
-# Pick some random address in the 192.168.xxx.xxx range for VirtualBox.
+PRIVATE_KEY_FILE="!!PRIVATE_KEY_FILE"
+
 # If you make multiple copies of the repo to set up multiple VirtualBox instances, 
 # each should use a different address here
 VIRTUALBOX_LOCAL_IP_ADDRESS="!!VIRTUALBOX_LOCAL_IP_ADDRESS"
@@ -7,7 +8,6 @@ VIRTUALBOX_LOCAL_IP_ADDRESS="!!VIRTUALBOX_LOCAL_IP_ADDRESS"
 # you have configred in config.sh
 
 DIGOCE_DROPLET_NAME="!!MAIN_DOMAIN"
-DIGOCE_PRIVATE_KEY_FILE="id_!!MAIN_DOMAIN"
 DIGOCE_PROVIDER_TOKEN="!!DIGOCE_PROVIDER_TOKEN"
 
 SHARED_FOLDER_NAME="vagrant"

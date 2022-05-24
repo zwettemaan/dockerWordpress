@@ -23,9 +23,22 @@ fi
 rm -rf /etc/localtime
 ln -s /usr/share/zoneinfo/NZ /etc/localtime
 
-add-apt-repository ppa:ondrej/php -y
-apt-get update
-apt-get upgrade
+if [ ! -d "/root/.ssh" ]; then
+  mkdir "/root/.ssh"
+  chmod 700 "/root/.ssh"
+fi
+
+if [ ! -d "/home/vagrant/.ssh" ]; then
+  mkdir "/home/vagrant/.ssh"
+  chmod 700 "/home/vagrant/.ssh"
+  chown vagrant:vagrant "/home/vagrant/.ssh"
+fi
+
+cp "/vagrant/${PRIVATE_KEY_FILE}.pub" "/root/.ssh/${PRIVATE_KEY_FILE}.pub"
+chmod 600 "/root/.ssh/${PRIVATE_KEY_FILE}.pub"
+
+cp "/vagrant/${PRIVATE_KEY_FILE}.pub" "/home/vagrant/.ssh/${PRIVATE_KEY_FILE}.pub"
+chmod 600 "/home/vagrant/.ssh/${PRIVATE_KEY_FILE}.pub"
 
 apt-get -y install docker.io
 apt-get -y install docker-compose
@@ -35,8 +48,11 @@ apt-get -y install ccrypt
 apt-get -y install python3-pip
 apt-get -y install fail2ban
 apt-get -y install inotify-tools
-apt-get -y install php7.4-cli php7.4-curl
+apt-get -y install php8.1-cli php8.1-curl
 apt-get -y install net-tools
+
+apt-get update
+apt-get dist-upgrade
 
 export IPV4_ADDR=`hostname -I | cut -d' ' -f1`
 
@@ -56,7 +72,9 @@ export TRUSTED_IP="${TRUSTED_IP}"
 export IPV4_ADDR="${IPV4_ADDR}"
 export OWNCLOUD_BACKUP_SERVER="${OWNCLOUD_BACKUP_SERVER}"
 export CLOUDFLARE_USER="${CLOUDFLARE_USER}"
+export CLOUDFLARE_GLOBAL_API_KEY="${CLOUDFLARE_GLOBAL_API_KEY}"
 export CLOUDFLARE_API_TOKEN="${CLOUDFLARE_API_TOKEN}"
+export PRIVATE_KEY_FILE="${PRIVATE_KEY_FILE}"
 EOF
 
 pip install zope-interface
@@ -349,7 +367,7 @@ actionunban = curl -X DELETE "https://api.cloudflare.com/client/v4/user/firewall
 
 [Init]
 
-cftoken = ${CLOUDFLARE_API_TOKEN}
+cftoken = ${CLOUDFLARE_GLOBAL_API_KEY}
 cfuser = ${CLOUDFLARE_USER}
 
 EOF
@@ -374,7 +392,7 @@ cat > /root/clearCloudFlare.php << EOF
 // all which are older than some specified value
 
 \$authemail = "${CLOUDFLARE_USER}";
-\$authkey   = "${CLOUDFLARE_API_TOKEN}";
+\$authkey   = "${CLOUDFLARE_GLOBAL_API_KEY}";
 \$page      = 1;
 \$ids       = array(); // id's to block
 \$cutoff    = time()-(3600*24*28); // 28 days
@@ -488,3 +506,6 @@ crontab < /vagrant/scripts/crontab.txt
 if [ "${SERVERTYPE}" == "DIGOCE_docker" ]; then
   rm -f /vagrant/scripts/offlinecerts.sh
 fi
+
+cat "/home/vagrant/.ssh/${PRIVATE_KEY_FILE}.pub" >> "/home/vagrant/.ssh/authorized_keys"
+cat "/root/.ssh/${PRIVATE_KEY_FILE}.pub" >> "/root/.ssh/authorized_keys"

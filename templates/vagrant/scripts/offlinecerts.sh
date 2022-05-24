@@ -18,12 +18,13 @@ if [ ! -d "${DIR_CONFIG}" ]; then
 	mkdir "${DIR_CONFIG}"
 fi
 
-. ${SCRIPTDIR}/credentials.ini
-
+# dns_cloudflare_api_token = ${CLOUDFLARE_API_TOKEN} # fail2ban needs to support tokens and then we can switch
 cat > /tmp/credentials.ini << EOF
 dns_cloudflare_email = ${CLOUDFLARE_USER}
-dns_cloudflare_api_key = ${CLOUDFLARE_API_TOKEN}
+dns_cloudflare_api_key = ${CLOUDFLARE_GLOBAL_API_KEY}
 EOF
+
+chmod 400 /tmp/credentials.ini
 
 . certlist_cloudflare.sh
 
@@ -40,4 +41,5 @@ certbot -n \
   --dns-cloudflare-credentials /tmp/credentials.ini \
   ${CERTLIST} certonly
 
-  rm -f /tmp/credentials.ini
+chmod 600 /tmp/credentials.ini
+rm -f /tmp/credentials.ini
