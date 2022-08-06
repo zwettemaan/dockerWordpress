@@ -43,7 +43,7 @@ Put it somewhere convenient on your computer.
 You will need to configure the scripts to match your particular requirements. The config files contain constants that need to 
 be customized for your particular setup.
 
-Search all text files for the prefix 'MY_' - e.g. you'll find things like
+Search all text files for the prefix 'MY\_' - e.g. you'll find things like
 ```
 ...
 VIRTUALBOX_LOCAL_IP_ADDRESS = "MY_localIPAddress"
@@ -73,6 +73,7 @@ Registering your domain and handling DNS for your domain are two separate things
 https://www.cloudflare.com/dns/
 
 For the sake of argument, I'll be using the following settings for a demo-site:
+
 ```
 domain: demo.tmp.domains
 IP address: 192.168.5.123
@@ -182,21 +183,27 @@ Addresses that start with 192.168.xxx.xxx are 'unroutable' and cannot be accesse
 ### Starting the machine
 
 If you've gone through these motions previously, you might want to run
+
 ```
 vagrant box update
 ```
+
 to make sure you have the latest Vagrant box.
 
 If you want to start over from scratch, first run
+
 ```
 vagrant destroy
 ```
+
 which will destroy any previously created virtual machine, so you can have a clean slate.
 
 Start the virtual machine:
+
 ```
 vagrant up
 ```
+
 If the virtual machine does not exist yet, it will be built. Otherwise, the existing virtual machine will be started.
 
 ## DigitalOcean
