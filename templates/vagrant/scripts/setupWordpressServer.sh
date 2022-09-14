@@ -188,7 +188,7 @@ if [ -f /vagrant/serverport/${SERVER_DOMAIN}/serverdump.gz ]; then
     echo "USE ${MYSQL_DATABASE};" >> /tmp/${SERVER_DOMAIN}_serverdump.sql
     gzip -d < /vagrant/serverport/${SERVER_DOMAIN}/serverdump.gz >> /tmp/${SERVER_DOMAIN}_serverdump.sql 
 fi
-cat /tmp/${SERVER_DOMAIN}_serverdump.sql | docker exec -i ${DOCKERNAME_DB} mysql -u root -p"${MYSQL_ROOT_PASSWORD}" 
+cat /tmp/${SERVER_DOMAIN}_serverdump.sql | docker exec -i ${DOCKERNAME_DB} mysql -u root -p"${MYSQL_ROOT_PASSWORD}"
 
 if [ -d /vagrant/serverport/${SERVER_DOMAIN}/additional ]; then
     cd /vagrant/serverport/${SERVER_DOMAIN}/additional
