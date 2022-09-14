@@ -124,9 +124,9 @@ services:
     ports:
       - ${DOCKER_DB_PORT}:3306
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
       MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
     volumes:
       - /root/${SERVER_DOMAIN}/mysql:/var/lib/mysql:delegated
 
@@ -141,7 +141,7 @@ services:
     environment:
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
       WORDPRESS_DB_USER: ${MYSQL_USER}
-      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
       WORDPRESS_TABLE_PREFIX: ${WP_TABLE_PREFIX}
     working_dir: /var/www/html
     volumes:
@@ -172,7 +172,7 @@ sleep 10
 export DB_STARTED=0
 while [ "${DB_STARTED}" == "0" ]; do
     export DOCKERID_DB=`docker ps -aqf name=${DOCKERNAME_DB}`
-    export PING_REPLY=`docker exec ${DOCKERID_DB} mysqladmin -u ${MYSQL_USER} -p${MYSQL_PASSWORD} ping 2> /dev/null`
+    export PING_REPLY=`docker exec ${DOCKERID_DB} mysqladmin -u ${MYSQL_USER} -p"${MYSQL_PASSWORD}" ping 2> /dev/null`
     if [ "$PING_REPLY" == "mysqld is alive" ]; then
         echo "${DOCKERNAME_DB} started"
         export DB_STARTED=1
@@ -188,7 +188,7 @@ if [ -f /vagrant/serverport/${SERVER_DOMAIN}/serverdump.gz ]; then
     echo "USE ${MYSQL_DATABASE};" >> /tmp/${SERVER_DOMAIN}_serverdump.sql
     gzip -d < /vagrant/serverport/${SERVER_DOMAIN}/serverdump.gz >> /tmp/${SERVER_DOMAIN}_serverdump.sql 
 fi
-cat /tmp/${SERVER_DOMAIN}_serverdump.sql | docker exec -i ${DOCKERNAME_DB} mysql -u root -p${MYSQL_ROOT_PASSWORD} 
+cat /tmp/${SERVER_DOMAIN}_serverdump.sql | docker exec -i ${DOCKERNAME_DB} mysql -u root -p"${MYSQL_ROOT_PASSWORD}" 
 
 if [ -d /vagrant/serverport/${SERVER_DOMAIN}/additional ]; then
     cd /vagrant/serverport/${SERVER_DOMAIN}/additional
