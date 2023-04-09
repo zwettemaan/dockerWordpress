@@ -29,4 +29,4 @@ if [ -d /root/${SERVER_DOMAIN}/wp-content ]; then
 
 fi
 
-docker exec -i $DOCKERNAME_DB mysqldump -u root -p$MYSQL_ROOT_PASSWORD --databases ${MYSQL_DATABASE} | gzip > /vagrant/serverport/${SERVER_DOMAIN}/serverdump.gz
+docker exec -i $DOCKERNAME_DB mysqldump -u root -p"${MYSQL_ROOT_PASSWORD}" --databases ${MYSQL_DATABASE} | gzip > /vagrant/serverport/${SERVER_DOMAIN}/serverdump.gz

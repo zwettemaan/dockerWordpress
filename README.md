@@ -112,19 +112,19 @@ We're using Ubuntu 20.04 LTS which should be supported until 2024
 
 ## Choose between VirtualBox or DigitalOcean
 
-The templates directory of this repo contains at least two Vagrantfiles: `templates/Vagrantfile.DigitalOcean` and `templates/Vagrantfile.VirtualBox`
+The templates directory of this repo contains at least two Vagrantfiles: `templates/Vagrantfile.DIGOCE` and `templates/Vagrantfile.VBOX`
 
 Neither of these file is 'active'. 
 
 The Vagrant software expects a file called just `Vagrantfile` (without file name extension) in the root directory of the repository.
 
-The idea is that you make a copy of either `templates/Vagrantfile.DigitalOcean` or `templates/Vagrantfile.VirtualBox` into the root directory, and rename it to `Vagrantfile`.
+The idea is that you make a copy of either `templates/Vagrantfile.DIGOCE` or `templates/Vagrantfile.VBOX` into the root directory, and rename it to `Vagrantfile`.
 
 Note: such `Vagrantfile` (without file name extension) is listed as an entry in the `.gitignore` list. 
 
 The copied `Vagrantfile` is not tracked by the git repository, and you can edit `Vagrantfile` to your heart's content, without fear that any changes you would disrupt the content of the parent git repository.
 
-If things go to custard, you can always start over by making a fresh copy of `Vagrantfile.DigitalOcean` or `Vagrantfile.VirtualBox`.
+If things go to custard, you can always start over by making a fresh copy of `Vagrantfile.DIGOCE` or `Vagrantfile.VBOX`.
 
 Both `Vagrantfile.xxx` will pass an environment variable `SERVERTYPE` to the `bootstrap.sh` script which is run by Vagrant when launching the virtual computer.
 
@@ -132,7 +132,7 @@ This mechanism allows the `bootstrap.sh` script to alter its behavior depending 
 
 ## VirtualBox
 
-To spin up your WordPress site on a local VirtualBox, duplicate the `templates/Vagrantfile.VirtualBox` to `Vagrantfile`.
+To spin up your WordPress site on a local VirtualBox, duplicate the `templates/Vagrantfile.VBOX` to `Vagrantfile`.
 
 Make a copy of the files `templates/config.rb` and `templates/config.sh` and put them in the root of the repository.
 
@@ -208,7 +208,7 @@ If the virtual machine does not exist yet, it will be built. Otherwise, the exis
 
 ## DigitalOcean
 
-To spin up your WordPress site on a droplet at DigitalOcean duplicate the `Vagrantfile.DigitalOcean` to `Vagrantfile`.
+To spin up your WordPress site on a droplet at DigitalOcean duplicate the `Vagrantfile.DIGOCE` to `Vagrantfile`.
 
 Edit the `config.rb` and `config.sh` to match your needs
 

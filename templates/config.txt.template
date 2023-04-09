@@ -66,11 +66,12 @@ PRIVATE_KEY_FILE="MY_PRIVATE_KEY_FILE"
 # Pick a MySQL user name, and a password for that user
 # Pick another password for the MySQL root user
 # Pick a name for the database that needs to be created
+# Make sure to escape any & characters in the passwords (\& instead of &)
 #
 
 MYSQL_USER="MY_DATABASE_USERNAME"
-MYSQL_PASSWORD="MY_DATABASE_PASSWORD"
-MYSQL_ROOT_PASSWORD="MY_DATABASE_ROOT_PASSWORD"
+MYSQL_PASSWORD='MY_DATABASE_PASSWORD'
+MYSQL_ROOT_PASSWORD='MY_DATABASE_ROOT_PASSWORD'
 MYSQL_DATABASE="MY_DATABASE_NAME"
 
 #
